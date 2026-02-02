@@ -1,0 +1,156 @@
+## Step-by-Step Deployment
+
+---
+
+## 1. Virtual Machine Creation
+
+### Domain Controller (DC01)
+- OS Type: Windows Server (64-bit)
+- RAM: 4–6 GB
+- Disk: 60+ GB (VDI, dynamically allocated)
+- Network Adapter: Internal Network
+
+### Client Machine (CLIENT01)
+- OS Type: Windows 10/11 (64-bit)
+- RAM: 4 GB
+- Disk: 40–60 GB
+- Network Adapter: Same Internal Network as DC01
+
+---
+
+## 2. Windows Server Installation
+
+1. Install Windows Server with **Desktop Experience**
+2. Set a strong local Administrator password
+3. Rename the server to `DC01`
+4. Reboot to apply changes
+
+---
+
+## 3. Static IP & DNS Configuration
+
+1. Configure a **static IPv4 address** on DC01  
+2. Set Preferred DNS Server to the DC’s own IP address  
+3. Verify connectivity using `ipconfig` and `ping`
+
+> Active Directory requires static DNS to properly resolve domain services.
+
+---
+
+## 4. Active Directory Domain Services (AD DS)
+
+1. Open **Server Manager**
+2. Add the **Active Directory Domain Services** role
+3. Promote the server to a Domain Controller:
+   - Create a **new forest**
+   - Domain name: `DC01`
+   - Set DSRM password
+4. Reboot after promotion
+
+---
+
+## 5. Active Directory Structure
+
+### Organizational Units (OUs)
+Created under the domain:
+- `_Users`
+- `_Groups`
+- `_Computers`
+
+### Users
+- Created multiple test user accounts
+- Applied consistent naming conventions
+
+### Security Groups
+- Global Security Groups created (e.g., `IT-Admins`, `HR-Users`)
+- Users assigned to groups to support role-based access
+
+---
+
+## 6. DNS and DHCP (Optional Enhancement)
+
+- Verified DNS forward lookup zone for `DC01`
+- Confirmed presence of `_msdcs` records
+- (Optional) DHCP role added to automate client IP assignment
+
+---
+
+## 7. Client Machine Domain Join
+
+1. Installed Windows 10/11 on CLIENT01
+2. Configured DNS to point to DC01
+3. Joined CLIENT01 to the `DC01` domain
+4. Rebooted and logged in using a domain user account
+
+This validated domain authentication and connectivity.
+
+---
+
+## 8. File Shares & Access Control
+
+1. Created shared folders on the Domain Controller
+2. Configured NTFS permissions using **security groups**
+3. Removed direct user permissions
+4. Verified effective access from CLIENT01
+
+This demonstrates **least privilege and RBAC principles**.
+
+---
+
+## 9. Group Policy Configuration
+
+1. Opened **Group Policy Management**
+2. Created custom Group Policy Objects (GPOs)
+3. Configured:
+   - Password complexity
+   - Account lockout thresholds
+4. Linked GPOs to appropriate OUs
+5. Forced policy updates using `gpupdate /force`
+
+---
+
+## 10. Validation & Testing
+
+- Logged in with domain users
+- Confirmed GPO enforcement
+- Verified access to shared resources
+- Reviewed Security Event Logs:
+  - Successful logons (Event ID 4624)
+  - Failed logons (Event ID 4625)
+
+## Skills Demonstrated
+
+- Active Directory administration
+- Identity lifecycle management
+- Group-based access control
+- Windows networking fundamentals
+- Policy-based security enforcement
+- Troubleshooting and validation
+
+---
+
+## Role Alignment
+
+This lab aligns directly with:
+- SOC Analyst (Tier 1)
+- IAM Analyst (Junior)
+- GRC / Compliance Analyst
+- IT Support / Systems Support
+- Junior Systems Administrator
+
+---
+
+## Future Enhancements
+- Integrate osTicket for help desk workflows
+- Forward Windows logs to Splunk or SIEM
+- Automate user provisioning with PowerShell
+- Add Linux systems integrated with AD
+
+---
+
+## References
+- YouTube: *How to Setup a Basic Home Lab Running Active Directory*  
+- Oracle VirtualBox Documentation  
+- Microsoft Active Directory Documentation
+
+---
